@@ -1,0 +1,99 @@
+# -------------------------------------------------------------------------------------- +
+# 2D Bayesian Automated Tilted-ring fitter (2DBAT)                                       +
+# by SE-HEON OH (KASI/ICRAR) + WALLABY KINEMATICS WORKING GROUP                          +
+# -------------------------------------------------------------------------------------- +
+# 2dbat README by Se-Heon Oh
+# version 1.0 (8 Dec 2016)
+
+
+# DEPENDENCIES
+==============
+2dbat depends on the following external libraries, which have to be installed in prior
+
+- Open MPI
+    : https://www.open-mpi.org/
+
+- MultiNest_v3.7 (Efficient and Robust Bayesian Inference)
+    : https://ccpforge.cse.rl.ac.uk/gf/project/multinest/ (See Feroz et al. 2009; MNRAS, 398, 1601)
+
+- CFITSIO
+    : http://heasarc.gsfc.nasa.gov/fitsio/fitsio.html
+
+- GSL (GNU Scientific Library)
+    : https://www.gnu.org/software/gsl/
+
+- ATLAS (Automatically Tuned Linear Algebra Software)
+    : http://math-atlas.sourceforge.net/
+
+- LAPACK (Linear Algebra PACKage)
+    : http://www.netlib.org/lapack/
+
+- BLAS (Basic Linear Algebra Subprograms)
+    : http://www.netlib.org/blas/
+
+- CBLAS (C interface to the BLAS library)
+    : http://www.netlib.org/blas/
+
+
+# COMPILERS (Wrappers)
+==============
+
+- mpicc
+    : https://www.open-mpi.org/doc/v1.8/man1/mpicc.1.php
+
+- mpif90
+    : https://www.open-mpi.org/doc/v2.0/man1/mpif90.1.php
+
+
+
+# INSTALLATION
+==============
+Please proceed with the following steps. The current version of 2DBAT has been only tested on Linux OS (tested on ubuntu > 10.0.1):
+
+----------------------------------------------------------------
++ STEP 1
+: Set the paths of the directories where Multinest/CFITSIO/GSL/ATLAS/LAPACK/BLAS/CBLAS are installed on your system, and generate Makefile by running 'setup_2dbat.sh' script provided.
+
+----------------------------------------------------------------
++ STEP 2
+: Now, you can compile 2dbat by typing,
+
+    'make'
+
+: The '2dbat' binary file is now installed in ./src/bin
+
+----------------------------------------------------------------
++ STEP 3 (optional)
+: If you need to remove any existing object files and want to re-compile,
+
+    'make clean & 
+    make'
+
+----------------------------------------------------------------
++ STEP 4 (optional)
+: You may need to update the environmental parameter, 'LD_LIBRARY_PATH' in your '.bashrc' or '.tcshrc' which indicates where to look for the libraries above in STEP 1
+
+: Please contact Se-Heon Oh (seheonoh {at} kasi.re.kr) for any enquiries 
+
+# git update
+#==============
+# git config --global user.name "Se-Heon Oh"
+# git config --global user.email seheonoh@kasi.re.kr
+# git init
+# git add .
+# git commit -m "2dbat updated"
+# git remote add origin https://github.com/seheonoh/2dbat
+# git push -u --force origin master
+#
+
+
+# REFERENCE
+==============
+
+2D Bayesian automated tilted-ring fitting of disk galaxies in large HI galaxy surveys: 2DBAT
+by Oh, Se-Heon, Staveley-Smith, Lister; Spekkens, Kristine, Kamphuis, Peter & Koribalski, Baerbel S
+(https://arxiv.org/abs/1709.02049)
+
+
+
+
