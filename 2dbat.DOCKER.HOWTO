@@ -1,0 +1,471 @@
+# -------------------------------------------------------------------------------------- +
+# 2D Bayesian Automated Tilted-ring fitter (2DBAT)                                       +
+# by SE-HEON OH (KASI/ICRAR) + WALLABY KINEMATICS WORKING GROUP                          +
+# -------------------------------------------------------------------------------------- +
+# Docker image (based on Linux UBUNTU 16.04) for 2DBAT by Se-Heon Oh
+# version 0.6 (3 Jan 2017)
+
++++++++++++++++++++++++++
+On a Linux ubuntu system:
+
+
+# 0. INSTALL DOCKER (on LINUX UBUNTU SYSTEM)
+=====================================================================
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ sudo apt-get update
+seheon@dwarf ~]$ sudo apt-get install docker.io
+seheon@dwarf ~]$ sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
+seheon@dwarf ~]$
+.....................................................................
+
+# 0. INSTALL DOCKER (on MAC)
+=====================================================================
+.....................................................................
+- Docker for Mac has been released! 
+- https://docs.docker.com/docker-for-mac/
+- After installing docker, you need to setup its runtime CPU/MEMORY resources
+.....................................................................
+
+# 0. INSTALL DOCKER (on MS WINDOWS)
+=====================================================================
+.....................................................................
+- Docker for Windows has been released! 
+- https://docs.docker.com/docker-for-windows/
+- After installing docker, you need to setup its runtime CPU/MEMORY resources
+.....................................................................
+
+
+# 1. START DOCKER (if not started)
+=====================================================================
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ sudo service docker start
+seheon@dwarf ~]$
+.....................................................................
+
+
+# 2. SEARCH 2DBAT IMAGE on "https://hub.docker.com"
+=====================================================================
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ sudo docker search 2dbat
+
+NAME                  DESCRIPTION   STARS     OFFICIAL   AUTOMATED
+seheonoh/2dbat_v1.0                 0                    
+
+seheon@dwarf ~]$
+.....................................................................
+
+
+# 3. CHECK THE TAG OF THE 2DBAT IMAGE, "seheonoh/2dbat_v1.0"
+=====================================================================
+- Visit https://hub.docker.com/r/seheonoh/2dbat_v1.0/
+- Click Tags and check the tag: dc_0.8
+
+
+# 4. PULL THE 2DBAT IMAGE FROM https://hub.docker.com/r/seheonoh/2dbat_v1.0/
+=====================================================================
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ sudo docker pull seheonoh/2dbat_v1.0:dc_0.8
+seheon@dwarf ~]$
+.....................................................................
+
+--> Now, the 2dbat image is being downloaded... (~600 MB)
+
+
+# 5. GENERATE A CONTAINER OF THE 2DBAT IMAGE LOADED
+=====================================================================
+- Check the loaded image
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ sudo docker images
+REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+seheonoh/2dbat_v1.0   dc_0.8              b839cd80eec3        26 minutes ago      1.878 GB
+seheon@dwarf ~]$
+seheon@dwarf ~]$
+.....................................................................
+
+
+- Generate a container by linking a directory (/mnt/wdir) in your host
+machine where you will put your data to the working directory in the
+container (/home/bat/2dbat_proc/wdir):
+
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ sudo docker run -i -t --name 2dbat -v /mnt/wdir:/home/bat/2dbat_proc/wdir seheonoh/2dbat_v1.0:dc_0.8 /bin/tcsh
+seheon@dwarf ~]$
+.....................................................................
+
+
+# 6. RUN 2dbat IN THE GENERATED CONTAINER
+=====================================================================
+- Now, you are in the container as root (the container name: "2dbat")
+- login to a pre-generated user, "bat" by "su bat" (in case, the passwd for "bat" : bat2017)
+
+.....................................................................
+06b411e33c2b:/#
+06b411e33c2b:/# su bat
+bat@06b411e33c2b /]$ cd /home/bat
+bat@06b411e33c2b ~]$ ls -al
+total 60
+drwxr-xr-x 18 bat  bat  4096 Jan  5 09:50 .
+drwxr-xr-x  7 bat  bat  4096 Jan  5 09:50 ..
+-rw-------  1 bat  bat  5581 Jan  5 05:48 .bash_history
+drwxrwxr-x  7 bat  bat  4096 Jan  5 09:50 .cache
+drwxrwxr-x  5 bat  bat  4096 Jan  5 09:50 .config
+drwx------  4 bat  bat  4096 Jan  5 09:50 .local
+-rw-rw-r--  1 bat  bat  1627 Jan  5 05:49 .tcshrc
+-rw-------  1 bat  bat  8993 Jan  5 08:14 .viminfo
+drwxrwxr-x 12 bat  bat  4096 Jan  5 09:50 2dbat_dc
+drwxrwxr-x 12 bat  bat  4096 Jan  5 09:50 2dbat_libs
+drwxr-xr-x  3 root root 4096 Jan  5 12:56 2dbat_proc
+drwxrwxr-x  2 bat  bat  4096 Jan  5 09:50 2dbat_test
+bat@06b411e33c2b ~]$
+.....................................................................
+
+- You then need to change the ownership of the working directory, "2dbat_proc":
+- note: passwd for bat is "bat2017"
+.....................................................................
+bat@06b411e33c2b ~]$ sudo chown -R bat.bat 2dbat_proc
+[sudo] password for bat:
+
+bat@06b411e33c2b ~]$
+.....................................................................
+
+- Test 2dbat using the example data provided
+: copy the example data (cube, velocity field, velocity field error, moment maps)
+in "2dbat_test" directory to "2dbat_proc/wdir" where 2dbat is processing.
+
+.....................................................................
+bat@06b411e33c2b ~]$
+bat@06b411e33c2b ~]$ cp 2dbat_test/* 2dbat_proc/wdir
+bat@06b411e33c2b ~]$
+.....................................................................
+
+- Run "2dbat.run.csh" script provided in "2dbat_dc"
+
+- You may edit the script "2dbat.run.csh" as you wish!
+
+- Test 2dbat using your own data
+: As in "5. GENERATE A CONTAINER OF THE 2DBAT IMAGE LOADED", the working directory
+(/home/bat/2dbat_proc/wdir) of the container is generated by linking a host machine's
+directory (/mnt/wdir). You can generated another container or restart the container
+with different host directories where you put your own data. As an example:
+
+# 6.1 Exit from the container
+.....................................................................
+bat@06b411e33c2b ~]$
+bat@06b411e33c2b ~]$ exit
+exit
+06b411e33c2b:/# exit
+exit
+seheon@dwarf ~]$
+seheon@dwarf ~]$
+.....................................................................
+
+# 6.2 Check the generated container and remove it
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ sudo docker ps -a
+CONTAINER ID        IMAGE                        COMMAND             CREATED             STATUS                      PORTS               NAMES
+06b411e33c2b        seheonoh/2dbat_v1.0:dc_0.8   "/bin/tcsh"         2 hours ago         Exited (0) 10 minutes ago                       2dbat
+seheon@dwarf ~]$ 
+seheon@dwarf ~]$  sudo docker rm 06b411e33c2b
+seheon@dwarf ~]$ 
+.....................................................................
+
+# 6.3 Make a working directory and put your own data that you want to analyse
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ mkdir /home/seheon/2dbat_temp
+seheon@dwarf ~]$
+seheon@dwarf ~]$ cp your_own_velocity_field.fits /home/seheon/2dbat_temp
+seheon@dwarf ~]$ cp your_own_velocity_field_error.fits /home/seheon/2dbat_temp
+seheon@dwarf ~]$ cp your_own_mom0.fits /home/seheon/2dbat_temp
+seheon@dwarf ~]$ cp your_own_mom2.fits /home/seheon/2dbat_temp
+seheon@dwarf ~]$
+.....................................................................
+
+# 6.4 Check the loaded images
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ sudo docker images
+REPOSITORY            TAG                 IMAGE ID            CREATED             SIZE
+seheonoh/2dbat_v1.0   dc_0.8              c56e7c27f5f6        3 hours ago         1.803 GB
+seheon@dwarf ~]$ 
+.....................................................................
+
+# 6.5 Generate a 2dbat container by linking the new working directory to the container's one
+.....................................................................
+seheon@dwarf ~]$
+seheon@dwarf ~]$ sudo docker run -i -t --name 2dbat -v /home/seheon/2dbat_temp:/home/bat/2dbat_proc/wdir seheonoh/2dbat_v1.0:dc_0.8 /bin/tcsh
+4ae4be741b98:/#
+4ae4be741b98:/#
+.....................................................................
+
+
+# 6.6 Change the user to "bat" and edit "2dbat.run.csh" in acoordance with the changes
+.....................................................................
+4ae4be741b98:/#
+4ae4be741b98:/# su bat
+bat@4ae4be741b98 /]$
+bat@4ae4be741b98 /]$ cd /home/bat/2dbat_dc
+bat@4ae4be741b98 ~/2dbat_dc]$
+bat@4ae4be741b98 ~/2dbat_dc]$ vi 2dbat.run.csh
+
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+#! /bin/csh
+
+#-------------------------
+# SET PATH
+set main = /home/bat/2dbat_dc
+set main_py = /home/bat/2dbat_dc/pyplots
+set wdir = /home/bat/2dbat_proc/wdir # THIS DIRECTORY IS LINKED TO YOUR HOST MACHINE'S DIRECTORY WHERE YOUR OWN DATA ARE.
+
+#******************************************************************************************
+# SETUP 2DBAT DEFAULT PARAMS 
+
+
+# !!!!!!!! EDIT HERE !!!!!!!!!!!! : UPDATE THE PARAMS WITH YOUR OWN FILE NAMES.
+# 0. dir + input files
+set cube = IA2.40B8X120X20C00S0P45I40DO0.SS92.b6.decim10.fits
+set input_vf = $cube.h3gfit.x.fits
+set input_sigma = $cube.h3gfit.xe.fits
+set input_mom0 = $cube.mom0.fits
+set input_mom2 = $cube.mom2.fits
+
+# 1. PA / INCL splines
+set ring = 4  # in pixels
+set po = p10 (p: stands for PA; 1: stands for psection; 0: stands for porder)
+set io = i10 (i: stands for INCL; 1: stands for isection; 0: stands for iorder)
+set psection = 1
+set porder = 0
+.
+.
+.
+:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+bat@4ae4be741b98 ~/2dbat_dc]$
+bat@4ae4be741b98 ~/2dbat_dc]$
+
+# 6.7 Run 2dat.run.csh script
+.....................................................................
+bat@4ae4be741b98 ~/2dbat_dc]$ 
+bat@4ae4be741b98 ~/2dbat_dc]$ ls -al
+total 5356
+drwxrwxr-x 12 bat bat    4096 Jan  5 15:12 .
+drwxr-xr-x 19 bat bat    4096 Jan  5 15:12 ..
+-rwxrwxr-x  1 bat bat 5434760 Jan  5 04:37 2dbat
+-rwxr-xr-x  1 bat bat    5888 Jan  5 08:13 2dbat.run.csh
+-rw-rw-r--  1 bat bat    5671 Jan  5 04:37 Makefile
+-rw-rw-r--  1 bat bat    2361 Dec 26 23:36 README
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 docker_2dbat
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 include
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 pyplots
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 shared_libs
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 src
+bat@4ae4be741b98 ~/2dbat_dc]$ 
+bat@4ae4be741b98 ~/2dbat_dc]$ 
+bat@4ae4be741b98 ~/2dbat_dc]$ ./2dbat.run.csh
+!+++ A-1. FIND THE LARGEST CONNECTED AREA: 
+	++Found lower and upper values of LOS velocities++
+	- Vlos_lower  =   -55.8209	Vlos_upper = 57.432145
+
+	++Robust mean & std of LOS velocities++
+	- R-mean      =     0.8056	STD        = 18.875499
+
+	++Gaussian fit of the histogram of LOS velocities++
+	- Vlos_centre =     0.8056	Vlos_sigma = 18.875499
+
+[Done] 
+.
+.
+.
+.
+.
+.
+.
+.
+!RADIUS	XPOS	XPOS_e	YPOS	YPOS_e	VSYS	VSYS_e	PA	PA_e	INCL	INCL_e	VROT	VROT_et	VRAD	VRAD_e	VRAD_bs	VRAD_bs_e	Npix	Npix	e_sigma_studenT
+!(pix)	(pix)	(pix)	(pix)	(pix)	(km/s)	(km/s)	(deg)	(deg)	(deg)	(deg)	(km/s)	(km/s)	(km/s)	(km/s)	(km/s)	(km/s)		(0x0)	(0x0)	
+4.00	51.29	0.44	50.77	0.49	-0.05	0.77	45.87	0.99	44.24	4.83	16.68	24.28	0.00	0.00	0.00	0.00		77.00	77.00	1.85
+8.00	51.29	0.44	50.77	0.49	-0.05	0.77	45.87	0.99	44.24	4.83	28.02	24.44	0.00	0.00	0.00	0.00		160.00	160.00	1.31
+12.00	51.29	0.44	50.77	0.49	-0.05	0.77	45.87	0.99	44.24	4.83	34.95	24.61	0.00	0.00	0.00	0.00		237.00	237.00	1.36
+16.00	51.29	0.44	50.77	0.49	-0.05	0.77	45.87	0.99	44.24	4.83	39.02	24.78	0.00	0.00	0.00	0.00		322.00	322.00	2.05
+20.00	51.29	0.44	50.77	0.49	-0.05	0.77	45.87	0.99	44.24	4.83	42.00	24.98	0.00	0.00	0.00	0.00		381.00	381.00	3.21
+24.00	51.29	0.44	50.77	0.49	-0.05	0.77	45.87	0.99	44.24	4.83	44.12	25.17	0.00	0.00	0.00	0.00		205.00	205.00	5.08
+
+
+!+++ B-7. SAVE THE FIT RESULTS AND MAKE MODEL VELOCITY FIELDS: [Done]
+
+	++ CHECK THE FIT RESULTS IN THE FOLLOWING DIRECTORY: ++
+
+	/home/bat/2dbat_proc/wdir/2dbat_output
+
+THE EXECUTION TIME ELAPSED: 25.862177 SECS
+
+
+
+WARNING:root:Deprecation Warning: 'triangle' has been renamed to 'corner'. This shim should continue to work but you should use 'import corner' in new code. https://github.com/dfm/corner.py
+WARNING:root:Deprecation Warning: 'triangle' has been renamed to 'corner'. This shim should continue to work but you should use 'import corner' in new code. https://github.com/dfm/corner.py
+WARNING:root:Too few points to create valid contours
+/usr/local/lib/python2.7/dist-packages/matplotlib/axes/_axes.py:531: UserWarning: No labelled objects found. Use label='...' kwarg on individual plots.
+  warnings.warn("No labelled objects found. "
+bat@4ae4be741b98 ~/2dbat_dc]$ 
+bat@4ae4be741b98 ~/2dbat_dc]$ cd /home/bat/2dbat_proc/wdir
+bat@4ae4be741b98 ~/2dbat_dc]$ 
+
+.....................................................................
+
+# 6.8 Check the output
+.....................................................................
+- You can check the 2dbat output files either in the working directory of the
+container or in your own working directory of the host machine.
+
+1) in the container's working directory:
+
+bat@4ae4be741b98 ~/2dbat_dc]$
+bat@4ae4be741b98 ~/2dbat_dc]$ cd /home/bat/2dbat_proc/wdir
+bat@4ae4be741b98 ~/2dbat_dc]$
+
+or 
+
+
+2) in your host machine's working directory linked to the container: e.g.,
+
+seheon@dwarf ~]$
+seheon@dwarf ~]$ cd /home/seheon/2dbat_temp
+seheon@dwarf ~]$
+
+
+.....................................................................
+
+# SOME USEFUL TIPS
+.....................................................................
+.....................................................................
+1. Assume a situation where you logged into a remote server (via SSH or something) which is servicing
+the 2dbat docker image. Now you uploaded your own data to be analysed to the remote server, and want
+to run 2dbat in a 2dbat container. It often happens that you need to logout from the remote server but
+still want to run the 2dbat process. In this case, one way to circumvent the disconnection is to use
+"nohup" command (on Linux):
+
++++++++++++++++++++++++++++++++++++++
+1) RUN THE 2DBAT WITH "nohup" command
+- On the 2dbat docker container in the remove server:
+.....................................................................
+bat@914f2948281a ~/2dbat_dc]$ 
+bat@914f2948281a ~/2dbat_dc]$ 
+bat@914f2948281a ~/2dbat_dc]$ ls -al
+total 5364
+drwxrwxr-x 12 bat bat    4096 Jan  7 07:26 .
+drwxr-xr-x 21 bat bat    4096 Jan  7 07:05 ..
+-rwxrwxr-x  1 bat bat 5434760 Jan  5 04:37 2dbat
+-rwxr-xr-x  1 bat bat    5906 Jan  7 06:53 2dbat.run.csh
+-rw-rw-r--  1 bat bat    1330 Jan  7 07:18 2dbat.run.p10.i10.time.log
+-rw-rw-r--  1 bat bat     189 Jan  7 06:44 2dbat.run.p23.i10.time.log
+-rw-rw-r--  1 bat bat    5671 Jan  5 04:37 Makefile
+-rw-rw-r--  1 bat bat    2361 Dec 26 23:36 README
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 docker_2dbat
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 include
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 pyplots
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 shared_libs
+drwxrwxr-x  2 bat bat    4096 Jan  5 09:50 src
+bat@914f2948281a ~/2dbat_dc]$ 
+bat@914f2948281a ~/2dbat_dc]$ 
+bat@914f2948281a ~/2dbat_dc]$ nohup ./2dbat.run.csh 
+!+++ A-1. FIND THE LARGEST CONNECTED AREA: 
+	++Found lower and upper values of LOS velocities++
+	- Vlos_lower  =   -55.8209	Vlos_upper = 57.432145
+
+	++Robust mean & std of LOS velocities++
+	- R-mean      =     0.8056	STD        = 18.875499
+
+	++Gaussian fit of the histogram of LOS velocities++
+	- Vlos_centre =     0.8056	Vlos_sigma = 18.875499
+
+[Done] 
+
+!+++ A-2. DEFINE THE AREA FOR ELLIPSE FIT: [Done] 
+
+!+++ A-3. PERFORM ELLIPSE FIT AND UPDATE PRIORS OF RING PARAMETERS: Perform ellipse fit to the defined area: [Done] 
+
+!+++ DETERMINE THE RECEDING AND APPROACHING SIDES: !+++ SET GAUSSIAN (XPOS, YPOS, VSYS, PA, INCL) + UNIFORM (VROT) PRIORS BASED ON THE ELLIPSE FIT: [Done] 
+
+
+	+++ ELLIPSE FIT +++
+	- X position     =    52.3011 (+-     0.8408)
+	- Y position     =    50.9598 (+-     0.8049)
+	- Position Angle =    48.6244 (+-    10.6824)
+	- Inclination    =    38.1661 (+-     7.1332)
+	- Major axis     =    38.8944 (+-     2.3190)
+.
+.
+.
+.
+.
+
++++++++++++++++++++++++++++++++++++++
+2) SIMPLY CLOSE THE TERMINAL
+
++++++++++++++++++++++++++++++++++++++
+3) LOGIN TO THE REMOTE SERVER AFTER A WHILE & ENTER THE RUNNING 2DBAT CONTAINER WITH A NEW TERMINAL
+: YOU WILL BE ABLE TO SEE THE JOB YOU RAN IN THE PREVIOUS CONTAINER IS STILL RUNNING IF THE JOB HAS NOT BEEN FINISHED
+
+seheon@dwarf ~]$ ssh seheon@remove-server -X
+seheon@remote-server's password: 
+Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-57-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+1 package can be updated.
+0 updates are security updates.
+
+
+Last login: Sat Jan  7 16:17:22 2017 from xxx.xxx.xxx.xxx
+seheon@remote-server:~$ 
+seheon@remote-server:~$ sudo docker ps
+CONTAINER ID        IMAGE                        COMMAND             CREATED             STATUS              PORTS               NAMES
+914f2948281a        seheonoh/2dbat_v1.0:dc_0.8   "/bin/tcsh"         16 hours ago        Up 21 minutes                           2dbat
+seheon@remote-server:~$ 
+seheon@remote-server:~$ docker exec -it 914f2948281a /bin/tcsh
+bat@914f2948281a ~/2dbat_dc]$ 
+bat@914f2948281a ~/2dbat_dc]$
+
+
+
+.....................................................................
+.....................................................................
+2. If you open another terminal for a container among others:
+
+
+1) First, type "docker ps" to see the currently running containers:
+
+seheon@dwarf 2dbat.git]$ sudo docker ps
+
+CONTAINER ID        IMAGE                        COMMAND             CREATED             STATUS              PORTS               NAMES
+e652593c6ba6        seheonoh/2dbat_v1.0:dc_0.8   "/bin/tcsh"         18 hours ago        Up 18 hours                             wallaby
+57f51df2ee54        seheonoh/2dbat_v1.0:dc_0.8   "/bin/tcsh"         34 hours ago        Up 33 hours                             lvhis
+
+- For example, there are two running containers with different container-IDs (names: wallay & lvhis). If you want to open a new terminal for the CONTAINER ID, wallaby
+
+seheon@dwarf 2dbat.git]$ sudo docker exec -it wallaby /bin/tcsh
+
+e652593c6ba6:/# 
+e652593c6ba6:/# 
+e652593c6ba6:/# su bat
+bat@e652593c6ba6 /]$ 
+bat@e652593c6ba6 /]$ 
+bat@e652593c6ba6 /]$ 
+
+- Now, you have a new terminal for the wallaby container.
+
+
+.....................................................................
+
+
+
+# End of line
+
