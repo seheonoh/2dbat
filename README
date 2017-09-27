@@ -75,6 +75,13 @@ Please proceed with the following steps. The current version of 2DBAT has been o
 
 : Please contact Se-Heon Oh (seheonoh {at} kasi.re.kr) for any enquiries 
 
+
+# For Docker users
+==================
+Please read '2dbat.DOCKER.HOWTO'
+
+
+
 # git update
 #==============
 # git config --global user.name "Se-Heon Oh"
